@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { inter } from "./fonts"
+import { initialPeople } from "@/mockData" 
 
 type Payment = {
   id: string
@@ -21,66 +22,53 @@ type Person = {
   payments: Payment[]
 }
 
-const initialPeople: Person[] = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    amount: 5000,
-    payments: [
-      { id: "a1", amount: 1000, isPaid: true },
-      { id: "a2", amount: 2000, isPaid: true },
-      { id: "a3", amount: 1000, isPaid: false },
-      { id: "a4", amount: 1000, isPaid: false },
-    ],
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    amount: 7500,
-    payments: [
-      { id: "b1", amount: 3000, isPaid: true },
-      { id: "b2", amount: 2000, isPaid: true },
-      { id: "b3", amount: 1500, isPaid: false },
-      { id: "b4", amount: 1000, isPaid: false },
-    ],
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    amount: 3200,
-    payments: [
-      { id: "c1", amount: 1000, isPaid: true },
-      { id: "c2", amount: 1200, isPaid: false },
-      { id: "c3", amount: 1000, isPaid: false },
-    ],
-  },
-  {
-    id: 4,
-    name: "Diana Martinez",
-    amount: 9800,
-    payments: [
-      { id: "d1", amount: 5000, isPaid: true },
-      { id: "d2", amount: 3000, isPaid: true },
-      { id: "d3", amount: 1800, isPaid: false },
-    ],
-  },
-  {
-    id: 5,
-    name: "Ethan Lee",
-    amount: 6400,
-    payments: [
-      { id: "e1", amount: 2000, isPaid: true },
-      { id: "e2", amount: 2000, isPaid: true },
-      { id: "e3", amount: 1400, isPaid: false },
-      { id: "e4", amount: 1000, isPaid: false },
-    ],
-  },
-]
+const getTotalPaid = (person: Person | null, paid: boolean): number => {
+  if (!person) return 0;
+  
+  if (paid) {
+    return person.payments.reduce((sum, payment) => 
+      payment.isPaid ? sum + payment.amount : sum,
+    0);
+  } else {
+    return person.payments.reduce((sum, payment) => 
+      !(payment.isPaid) ? sum + payment.amount : sum,
+    0);
+  }
+
+  
+};
+
 
 export default function MoneyTable() {
-  const [people, setPeople] = useState<Person[]>(initialPeople)
+  const [people, setPeople] = useState<Person[]>([])
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  
+
+  useEffect(() => {
+
+    const loadData = async () => {
+      try {
+        const res = await fetch('/api/persons', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(initialPeople)
+        });
+  
+        if (res.ok) {
+          const createdPerson = await res.json();
+          console.log('Succeed', createdPerson)
+        } else {
+          const errorData = await res.json();
+        }
+      } catch (error: any) {
+        console.error(error)
+      }
+    }
+
+    loadData()
+    
+  }, [])
 
   const handleSeeMore = (person: Person) => {
     setSelectedPerson(person)
@@ -130,7 +118,7 @@ export default function MoneyTable() {
             filter: "blur(0px)",
           }}
         >
-          <span>${payment.amount.toLocaleString()}</span>
+          <span>S/ {payment.amount.toLocaleString()}</span>
           <Button onClick={() => handleTransfer(payment.id)} size="icon" variant="ghost">
             {isPaidColumn ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
           </Button>
@@ -140,6 +128,8 @@ export default function MoneyTable() {
       )}
     </div>
   )
+
+
 
   return (
     <div className={`container mx-auto py-10 ${inter.className}`}>
@@ -172,34 +162,43 @@ export default function MoneyTable() {
         </CardContent>
       </Card>
 
+      {/* Modal  */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[800px] font-inter">
           <DialogHeader>
             <DialogTitle>{selectedPerson?.name}</DialogTitle>
-            <DialogDescription>Financial details and payment management</DialogDescription>
+            <DialogDescription>Detalles de pagos</DialogDescription>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-8">
+            
+            {/* Columna de pagado */}
             <div>
               <h3 className="mb-2 font-semibold">Pagado</h3>
               <AnimatePresence>
                 <div className="space-y-2">
-                  {Array.from({ length: 4 }).map((_, index) => {
+                  {people.map((_, index) => {
                     const payment = selectedPerson?.payments.find((p) => p.isPaid && p.id.endsWith(String(index + 1)))
                     return renderPaymentRow(payment || null, index, true)
                   })}
                 </div>
               </AnimatePresence>
+              <Button className="my-2" onClick={() => {selectedPerson?.payments.push({ id: "a5", amount: 1000, isPaid: true })}}>Agregar pago</Button>
+              <h3 className="my-2 font-semibold">S/ {getTotalPaid(selectedPerson, true)}</h3>
             </div>
+
+            {/* Columna de Por Pagar */}
             <div>
               <h3 className="mb-2 font-semibold">Por Pagar</h3>
               <AnimatePresence>
                 <div className="space-y-2">
-                  {Array.from({ length: 4 }).map((_, index) => {
+                  {people.map((_, index) => {
                     const payment = selectedPerson?.payments.find((p) => !p.isPaid && p.id.endsWith(String(index + 1)))
                     return renderPaymentRow(payment || null, index, false)
                   })}
                 </div>
               </AnimatePresence>
+                <Button className="my-2">Agregar pago</Button>
+                <h3 className="my-2 font-semibold">S/ {getTotalPaid(selectedPerson, false)}</h3>
             </div>
           </div>
         </DialogContent>
