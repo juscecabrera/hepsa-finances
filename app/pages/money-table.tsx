@@ -44,25 +44,29 @@ export default function MoneyTable() {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   
-
+  
   useEffect(() => {
-
     const loadData = async () => {
       try {
-        const res = await fetch('/api/persons', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(initialPeople)
-        });
-  
+        //esto es POST
+        // const res = await fetch('/api/persons', {
+        //   method: 'POST',
+        //   body: JSON.stringify(initialPeople[0])
+        // });
+
+        //esto es GET
+
+        const res = await fetch('/api/persons')
+        
         if (res.ok) {
           const createdPerson = await res.json();
           console.log('Succeed', createdPerson)
         } else {
           const errorData = await res.json();
+          console.log(errorData)
         }
       } catch (error: any) {
-        console.error(error)
+        console.error(error.message)
       }
     }
 

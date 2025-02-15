@@ -1,6 +1,7 @@
 import { openDb } from './db';
 
 export async function initDb() {
+  console.log('initDB')
   const db = await openDb();
 
   // Crea la tabla persons (usuarios)
