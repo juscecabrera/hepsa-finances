@@ -14,6 +14,7 @@ export const GET = async (req, res) => {
             person.payments = await db.all('SELECT * FROM payments WHERE personId = ?', person.id);
         }
     
+        console.log(persons.payments)
         return new Response(JSON.stringify(persons), { status: 200 })
     } catch (error) {
         return new Response("Failed to create a new prompt", { status: 500 });

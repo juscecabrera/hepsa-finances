@@ -1,4 +1,5 @@
 "use client"
+import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -8,6 +9,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { inter } from "./fonts"
 import { initialPeople } from "@/mockData" 
+import { Label } from "@radix-ui/react-label"
+import AddUserDialog from "@/components/AddUserDialog"
 
 type Payment = {
   id: string
@@ -54,12 +57,17 @@ export default function MoneyTable() {
         //   body: JSON.stringify(initialPeople[0])
         // });
 
-        //esto es GET
+        //esto es GET con persons
 
         const res = await fetch('/api/persons')
         
+        //esto es GET con workers (testing nueva ruta)
+        
+        // const res = await fetch('/api/workers')
+        
         if (res.ok) {
           const createdPerson = await res.json();
+          setPeople(createdPerson)
           console.log('Succeed', createdPerson)
         } else {
           const errorData = await res.json();
@@ -133,8 +141,6 @@ export default function MoneyTable() {
     </div>
   )
 
-
-
   return (
     <div className={`container mx-auto py-10 ${inter.className}`}>
       <Card className="shadow-lg">
@@ -143,12 +149,15 @@ export default function MoneyTable() {
           <CardDescription>A summary of people and their financial status</CardDescription>
         </CardHeader>
         <CardContent>
+          <AddUserDialog />
+          
+          {/* <Button onClick={() => handleAddWorker()} className="mx-auto">Agregar trabajador</Button> */}
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Cantidad</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,7 +166,7 @@ export default function MoneyTable() {
                   <TableCell className="font-medium">{person.name}</TableCell>
                   <TableCell>${person.amount.toLocaleString()}</TableCell>
                   <TableCell className="text-right">
-                    <Button onClick={() => handleSeeMore(person)}>See more</Button>
+                    <Button onClick={() => handleSeeMore(person)}>Ver más</Button>
                   </TableCell>
                 </TableRow>
               ))}
