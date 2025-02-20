@@ -10,8 +10,6 @@ interface RowsProps {
     paid: boolean;
 }
 
-
-
 const Rows: React.FC<RowsProps> = ({ number, index, paid }) => {
     return (
         <div className="flex items-center justify-between p-2 bg-gray-100 rounded mb-2 h-12" key={index + number}>
@@ -66,7 +64,7 @@ interface Person {
     payments: Payment[];
 }
 
-interface UserActionProps {
+interface UserActionDetailsProps {
     isModalOpen: boolean;
     setIsModalOpen: (open: boolean) => void;
     totalPaid: number;
@@ -75,9 +73,8 @@ interface UserActionProps {
 }
 
 
-const UserAction: React.FC<UserActionProps> = ({ isModalOpen, setIsModalOpen, totalPaid, totalUnpaid, selectedPerson }) => {
+const UserActionDetails: React.FC<UserActionDetailsProps> = ({ isModalOpen, setIsModalOpen, totalPaid, totalUnpaid, selectedPerson }) => {
 
-  
    function getAmounts(payments: { id: number; amount: number; isPaid: number; personId: number }[], paid: boolean): number[] {
     if (paid) {
       return payments
@@ -99,7 +96,6 @@ const UserAction: React.FC<UserActionProps> = ({ isModalOpen, setIsModalOpen, to
   return (
     <div>
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-            {/* {JSON.stringify(selectedPerson)} */}
             <DialogContent className='sm:max-w-[800px] font-inter'>
                 <DialogHeader>
                     <DialogTitle>{personName}</DialogTitle>
@@ -147,4 +143,4 @@ const UserAction: React.FC<UserActionProps> = ({ isModalOpen, setIsModalOpen, to
   )
 }
 
-export default UserAction
+export default UserActionDetails

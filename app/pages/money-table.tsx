@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { inter } from "./fonts"
 import AddUserDialog from "@/components/AddUserDialog"
-import UserAction from "@/components/UserActionDetails"
+import UserActionDetails from "@/components/UserActionDetails"
+import UserActionEdit from "@/components/UserActionEdit"
+import UserActionDelete from "@/components/UserActionDelete"
 
 type Payment = {
   id: string
@@ -43,6 +45,8 @@ export default function MoneyTable() {
   const [people, setPeople] = useState<Person[]>([])
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false)
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false)
   
   useEffect(() => {
     const loadData = async () => {
@@ -71,12 +75,14 @@ export default function MoneyTable() {
     setIsModalOpen(true)
   }
 
-  const handleEditUser = () => {
-    return
+  const handleEditUser = (person: Person) => {
+    setSelectedPerson(person)
+    setIsModalEditOpen(true)
   }
 
-  const handleDeleteUser = () => {
-    return 
+  const handleDeleteUser = (person: Person) => {
+    setSelectedPerson(person)
+    setIsModalDeleteOpen(true)
   }
 
   return (
@@ -103,8 +109,8 @@ export default function MoneyTable() {
                   <TableCell>${person.amount.toLocaleString()}</TableCell>
                   <TableCell className="text-right">
                     <Button onClick={() => handleSeeMore(person)} className="mr-5">Ver más</Button>
-                    <Button onClick={() => handleSeeMore(person)} className="mr-5">Editar</Button>
-                    <Button onClick={() => handleSeeMore(person)} className="bg-red-600 hover:bg-red-700">Eliminar</Button>
+                    <Button onClick={() => handleEditUser(person)} className="mr-5">Editar</Button>
+                    <Button onClick={() => handleDeleteUser(person)} className="bg-red-600 hover:bg-red-700">Eliminar</Button>
 
                   </TableCell>
                 </TableRow>
@@ -114,7 +120,10 @@ export default function MoneyTable() {
         </CardContent>
       </Card>
 
-      <UserAction isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} totalPaid={getTotalPaid(selectedPerson, true)} totalUnpaid={getTotalPaid(selectedPerson, false)}/>
+      <UserActionDetails isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} totalPaid={getTotalPaid(selectedPerson, true)} totalUnpaid={getTotalPaid(selectedPerson, false)}/>
+
+      <UserActionEdit isModalOpen={isModalEditOpen} setIsModalOpen={setIsModalEditOpen}  selectedPerson={selectedPerson} />
+      <UserActionDelete isModalOpen={isModalDeleteOpen} setIsModalOpen={setIsModalDeleteOpen} selectedPerson={selectedPerson} />
     </div>
   )
 }

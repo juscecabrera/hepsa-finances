@@ -10,7 +10,7 @@ async function openDb() {
   })
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
       const db = await openDb()
   
@@ -54,10 +54,6 @@ export async function POST(request: Request) {
     
     const paymentsInsertNotPaid = await db.run("INSERT INTO payments (amount, isPaid, personId) VALUES (?, ?, ?)", [notPaidAmount, 0, personId])
 
-
-
-
-
     // if (Array.isArray(payments)) {
     //     for (const payment of payments) {
     //     console.log('payment', payment);
@@ -85,3 +81,34 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PUT (request: Request) {
+  try {
+    const db = await openDb()
+    
+    
+    await db.close()
+    return NextResponse.json({ success: true }, { status: 201 })
+  } catch (error) {
+    console.error("Error:", error)
+    return NextResponse.json({ success: false, error: "Failed to edit user" }, { status: 500 })
+  }
+}
+
+export async function DELETE (request: Request) {
+  try {
+    const db = await openDb()
+
+    const { personName, personId } = await request.json()
+    
+    console.log(personName, personId)
+
+    const result = await db.run('DELETE FROM persons WHERE id = ?', personId)
+    
+    await db.close()
+
+    return NextResponse.json({ success: true, id: result.lastID }, { status: 200 })
+  } catch (error) {
+    console.error("Error:", error)
+    return NextResponse.json({ success: false, error: "Failed to delete user" }, { status: 500 })
+  }
+}

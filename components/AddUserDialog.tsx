@@ -54,7 +54,7 @@ export default function AddUserDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="font-inter">Add New User</DialogTitle>
+          <DialogTitle className="font-inter">Agregar Trabajador</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 font-inter">
           <div className="space-y-2">
