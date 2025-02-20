@@ -43,7 +43,7 @@ const UserActionDelete: React.FC<UserActionDeleteProps> = ({ isModalOpen, setIsM
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ personName, personId }),
+        body: JSON.stringify({ personId }),
       })
       if (response.ok) {
         alert("User deleted successfully!")

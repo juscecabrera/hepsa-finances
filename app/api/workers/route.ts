@@ -85,9 +85,13 @@ export async function PUT (request: Request) {
   try {
     const db = await openDb()
     
+    const { personId, newName } = await request.json()
+
+    const result = await db.run(`UPDATE persons SET name = ? WHERE id = ?`, [newName, personId])
     
     await db.close()
-    return NextResponse.json({ success: true }, { status: 201 })
+
+    return NextResponse.json({ success: true, id: result.lastID }, { status: 200 })
   } catch (error) {
     console.error("Error:", error)
     return NextResponse.json({ success: false, error: "Failed to edit user" }, { status: 500 })
@@ -98,9 +102,7 @@ export async function DELETE (request: Request) {
   try {
     const db = await openDb()
 
-    const { personName, personId } = await request.json()
-    
-    console.log(personName, personId)
+    const { personId } = await request.json()
 
     const result = await db.run('DELETE FROM persons WHERE id = ?', personId)
     

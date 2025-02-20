@@ -40,7 +40,6 @@ const getTotalPaid = (person: Person | null, paid: boolean): number => {
   }
 };
 
-
 export default function MoneyTable() {
   const [people, setPeople] = useState<Person[]>([])
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
@@ -48,27 +47,30 @@ export default function MoneyTable() {
   const [isModalEditOpen, setIsModalEditOpen] = useState(false)
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false)
   
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const res = await fetch('/api/persons')
-        
-        if (res.ok) {
-          const createdPerson = await res.json();
-          setPeople(createdPerson)
-          console.log('Succeed', createdPerson)
-        } else {
-          const errorData = await res.json();
-          console.log(errorData)
-        }
-      } catch (error: any) {
-        console.error(error.message)
+  const loadData = async () => {
+    try {
+      const res = await fetch('/api/workers')
+      
+      if (res.ok) {
+        const createdPerson = await res.json();
+        setPeople(createdPerson)
+        console.log('Succeed', createdPerson)
+      } else {
+        const errorData = await res.json();
+        console.log(errorData)
       }
+    } catch (error: any) {
+      console.error(error.message)
     }
+  }
 
+  useEffect(() => {
     loadData()
-    
   }, [])
+
+  useEffect(() => {
+    loadData()
+  }, [isModalOpen, isModalEditOpen, isModalDeleteOpen])
 
   const handleSeeMore = (person: Person) => {
     setSelectedPerson(person)
