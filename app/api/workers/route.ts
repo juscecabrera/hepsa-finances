@@ -15,11 +15,15 @@ export async function GET() {
       const db = await openDb()
   
       // Fetch all users from the database
-      const users = await db.all("SELECT * FROM workers")
+      const persons = await db.all("SELECT * FROM persons")
   
+      for (const person of persons) {
+        person.payments = await db.all('SELECT * FROM payments WHERE personId = ?', person.id);
+      }
+
       await db.close()
   
-      return NextResponse.json(users)
+      return NextResponse.json(persons)
     } catch (error) {
       console.error("Error:", error)
       return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 })
@@ -32,19 +36,46 @@ export async function POST(request: Request) {
     const { name, amount } = await request.json()
 
     const db = await openDb()
-
-    // Create the users table if it doesn't exist
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS workers (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        amount REAL
-      )
-    `)
-
+    
+    //Verificar con floats, decimales, etc. 
+    const totalAmount = Number(amount.Paid + amount.NotPaid)
+    
+    const paidAmount = amount.Paid
+    const notPaidAmount = amount.NotPaid
+    
     // Insert the new user
-    const result = await db.run("INSERT INTO workers (name, amount) VALUES (?, ?)", [name, amount])
+    const result = await db.run("INSERT INTO persons (name, amount) VALUES (?, ?)", [name, totalAmount])
 
+    const personId = result.lastID
+
+    //Falta ingresar los pagos en payments
+    
+    const paymentsInsertPaid = await db.run("INSERT INTO payments (amount, isPaid, personId) VALUES (?, ?, ?)", [paidAmount, 1, personId])
+    
+    const paymentsInsertNotPaid = await db.run("INSERT INTO payments (amount, isPaid, personId) VALUES (?, ?, ?)", [notPaidAmount, 0, personId])
+
+
+
+
+
+    // if (Array.isArray(payments)) {
+    //     for (const payment of payments) {
+    //     console.log('payment', payment);
+    
+    //     await new Promise((resolve, reject) => {
+    //         db.run(
+    //         'INSERT INTO payments (id, amount, isPaid, personId) VALUES (?, ?, ?, ?)',
+    //         [payment.id, payment.amount, payment.isPaid ? 1 : 0, personId],
+    //         function (err) {
+    //             if (err) reject(err);
+    //             else resolve();
+    //         }
+    //         );
+    //     });
+    //     }
+    // }
+
+    
     await db.close()
 
     return NextResponse.json({ success: true, id: result.lastID }, { status: 201 })

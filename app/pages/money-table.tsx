@@ -100,9 +100,9 @@ export default function MoneyTable() {
     }
   }
 
-  const renderPaymentRow = (payment: Payment | null, index: number, isPaidColumn: boolean) => (
+  const renderPaymentRow = (payment: number | null, index: number, isPaidColumn: boolean) => (
     <div
-      key={payment?.id || `empty-${isPaidColumn ? "paid" : "unpaid"}-${index}`}
+      key={payment || `empty-${isPaidColumn ? "paid" : "unpaid"}-${index}`}
       className="flex items-center justify-between p-2 bg-gray-100 rounded mb-2 h-12"
     >
       {payment ? (
@@ -130,8 +130,8 @@ export default function MoneyTable() {
             filter: "blur(0px)",
           }}
         >
-          <span>S/ {payment.amount.toLocaleString()}</span>
-          <Button onClick={() => handleTransfer(payment.id)} size="icon" variant="ghost">
+          <span>S/ {payment.toLocaleString()}</span>
+          <Button onClick={() => handleTransfer(payment)} size="icon" variant="ghost">
             {isPaidColumn ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
           </Button>
         </motion.div>
@@ -140,6 +140,19 @@ export default function MoneyTable() {
       )}
     </div>
   )
+
+  function getAmounts(payments: { id: number; amount: number; isPaid: number; personId: number }[], paid: boolean): number[] {
+    if (paid) {
+      return payments
+        .filter(payment => payment.isPaid === 1)
+        .map(payment => payment.amount);
+    }
+    else {
+      return payments
+        .filter(payment => payment.isPaid === 0)
+        .map(payment => payment.amount);
+    }
+  }
 
   return (
     <div className={`container mx-auto py-10 ${inter.className}`}>
@@ -150,8 +163,6 @@ export default function MoneyTable() {
         </CardHeader>
         <CardContent>
           <AddUserDialog />
-          
-          {/* <Button onClick={() => handleAddWorker()} className="mx-auto">Agregar trabajador</Button> */}
           <Table>
             <TableHeader>
               <TableRow>
@@ -189,9 +200,8 @@ export default function MoneyTable() {
               <h3 className="mb-2 font-semibold">Pagado</h3>
               <AnimatePresence>
                 <div className="space-y-2">
-                  {people.map((_, index) => {
-                    const payment = selectedPerson?.payments.find((p) => p.isPaid && p.id.endsWith(String(index + 1)))
-                    return renderPaymentRow(payment || null, index, true)
+                  {(getAmounts(selectedPerson?.payments || [], true)).map((amount, index) => {
+                    return renderPaymentRow(amount, index, true)
                   })}
                 </div>
               </AnimatePresence>
@@ -204,9 +214,8 @@ export default function MoneyTable() {
               <h3 className="mb-2 font-semibold">Por Pagar</h3>
               <AnimatePresence>
                 <div className="space-y-2">
-                  {people.map((_, index) => {
-                    const payment = selectedPerson?.payments.find((p) => !p.isPaid && p.id.endsWith(String(index + 1)))
-                    return renderPaymentRow(payment || null, index, false)
+                  {(getAmounts(selectedPerson?.payments || [], false)).map((amount, index) => {
+                    return renderPaymentRow(amount, index, true)
                   })}
                 </div>
               </AnimatePresence>
