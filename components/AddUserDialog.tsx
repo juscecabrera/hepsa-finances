@@ -88,7 +88,10 @@ export default function AddUserDialog() {
 
           </div>
           <DialogFooter>
-            <Button type="submit">Add User</Button>
+            <div className="flex flex-row justify-between w-full">
+              <Button variant="outline" onClick={() => {setOpen(false)}}>Cancelar</Button>
+              <Button type="submit">Agregar</Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

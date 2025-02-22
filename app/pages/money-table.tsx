@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { inter } from "./fonts"
 import AddUserDialog from "@/components/AddUserDialog"
 import UserActionDetails from "@/components/UserActionDetails"
+import UserActionDetails3 from "@/components/UserActionDetails3"
 import UserActionEdit from "@/components/UserActionEdit"
 import UserActionDelete from "@/components/UserActionDelete"
 
@@ -88,7 +89,7 @@ export default function MoneyTable() {
   }
 
   return (
-    <div className={`container mx-auto py-10 ${inter.className}`}>
+    <div className={`container mx-auto py-10 ${inter.className} font-inter`}>
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Finanzas Trabajadores Hepsa</CardTitle>
@@ -100,16 +101,16 @@ export default function MoneyTable() {
             <TableHeader>
               <TableRow>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Cantidad</TableHead>
+                <TableHead>Por Pagar Total</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {people.map((person) => (
-                <TableRow key={person.id}>
-                  <TableCell className="font-medium">{person.name}</TableCell>
-                  <TableCell>${person.amount.toLocaleString()}</TableCell>
-                  <TableCell className="text-right">
+                <TableRow key={person.id} className="font-inter">
+                  <TableCell className="font-medium font-inter">{person.name}</TableCell>
+                  <TableCell className="font-inter font-medium">S/ {person.amount.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-inter">
                     <Button onClick={() => handleSeeMore(person)} className="mr-5">Ver más</Button>
                     <Button onClick={() => handleEditUser(person)} className="mr-5">Editar</Button>
                     <Button onClick={() => handleDeleteUser(person)} className="bg-red-600 hover:bg-red-700">Eliminar</Button>
@@ -122,7 +123,9 @@ export default function MoneyTable() {
         </CardContent>
       </Card>
 
-      <UserActionDetails isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} totalPaid={getTotalPaid(selectedPerson, true)} totalUnpaid={getTotalPaid(selectedPerson, false)}/>
+      {/* <UserActionDetails isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} totalPaid={getTotalPaid(selectedPerson, true)} totalUnpaid={getTotalPaid(selectedPerson, false)}/> */}
+
+      <UserActionDetails3 isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} />
 
       <UserActionEdit isModalOpen={isModalEditOpen} setIsModalOpen={setIsModalEditOpen}  selectedPerson={selectedPerson} />
       <UserActionDelete isModalOpen={isModalDeleteOpen} setIsModalOpen={setIsModalDeleteOpen} selectedPerson={selectedPerson} />
