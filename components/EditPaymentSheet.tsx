@@ -1,6 +1,7 @@
 "use client"
 
-import type React from "react"
+import React from "react"
+// import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -22,13 +23,29 @@ import { format } from "date-fns"
 import { es } from "date-fns/locale"
 import { toast } from "sonner"
 
-export const AddPaymentSheet = () => {
+interface EditPaymentSheetProps {
+    // children: React.ReactNode
+    item: { id: string, amount: number } | null;
+    openEdit: boolean
+    setOpenEdit: (openEdit: boolean) => void
+}
+
+export const EditPaymentSheet:React.FC<EditPaymentSheetProps> = ({ openEdit, setOpenEdit, item }) => {
   const [isPaid, setIsPaid] = useState(false)
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [file, setFile] = useState<File | null>(null)
   const [amount, setAmount] = useState("1000")
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState("Lorem")
   const [isSubmitting, setIsSubmitting] = useState(false)
+    /*
+    Este componente tiene que recibir la data del item al que le demos click y
+    tenerla al inicio como read only
+    Tiene que tener un boton que me permita entrar a 'Edit Mode' y poder editar lo que queramos
+    Luego tenemos que poder presionar Guardar Cambios y que se haga el post
+    */
+
+
+
 
   const formatDate = (date: Date | undefined) => {
     if (!date) return ""
@@ -75,13 +92,13 @@ export const AddPaymentSheet = () => {
   }
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Agregar Pago</Button>
-      </SheetTrigger>
+    <Sheet open={openEdit} onOpenChange={setOpenEdit}>
+        {/* <SheetTrigger>
+          {children}
+        </SheetTrigger> */}
       <SheetContent className="font-inter space-y-3">
         <SheetHeader>
-          <SheetTitle className="text-xl font-bold space-y-0 pb-4">Agregar pago</SheetTitle>
+          <SheetTitle className="text-xl font-bold space-y-0 pb-4">Editar Detalles de Pago</SheetTitle>
         </SheetHeader>
 
         <div className="flex items-center space-x-2 pb-4">
@@ -135,7 +152,7 @@ export const AddPaymentSheet = () => {
             </Button>
           </SheetClose>
           <Button type="submit" onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Enviando..." : "Agregar Pago"}
+            {isSubmitting ? "Enviando..." : "Guardar Cambios"}
           </Button>
         </SheetFooter>
       </SheetContent>

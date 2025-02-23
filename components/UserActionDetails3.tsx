@@ -1,18 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { X, Check } from "lucide-react"
+// import { Button } from "@/components/ui/button"
+import { X } from "lucide-react"
 import { AddPaymentSheet } from './AddPaymentSheet'
-
+import { EditPaymentSheet } from './EditPaymentSheet'
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  useSortable
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import { SortableItem } from './SortableItem'
 
 interface Payment {
   id: string;
@@ -20,47 +15,13 @@ interface Payment {
 }
 
 interface Person {
-    name: string;
+  name: string;
 }
-
 
 interface UserActionDetailsProps {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
   selectedPerson: Person;
-}
-
-interface SortableItemProps {
-  id: string;
-  amount: number;
-}
-
-const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  }
-
-  return (
-    <div 
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className="my-4 text-lg bg-gray-200 p-3 rounded-md shadow-md font-medium cursor-move"
-      
-    >
-      S/ {amount}
-    </div>
-  )
 }
 
 const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
@@ -85,9 +46,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
   })
 
   // Estados para el input temporal en cada columna
-  const [newPaymentLeft, setNewPaymentLeft] = useState<string | null>(null)
-  const [newPaymentRight, setNewPaymentRight] = useState<string | null>(null)
-  const [showAddPaymentModal, setshowAddPaymentModal] = useState<boolean>(false)
+  const [selectedItem, setSelectedItem] = useState<{ id: string, amount: string } | null>(null);
 
   // Estado interno para manejar la animación del modal
   const [showModal, setShowModal] = useState(isModalOpen)
@@ -101,22 +60,6 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
       return () => clearTimeout(timeout)
     }
   }, [isModalOpen])
-
-  // Función para agregar un pago confirmado
-  const confirmPayment = (side: "left" | "right", value: string) => {
-    const parsed = parseFloat(value)
-    if (!isNaN(parsed)) {
-      setTableRows(prev => ({
-        ...prev,
-        [side]: [
-          ...prev[side],
-          { id: `${side}-${Date.now()}`, amount: parsed }
-        ]
-      }))
-    }
-    if (side === 'left') setNewPaymentLeft(null)
-    else setNewPaymentRight(null)
-  }
 
   // Función que maneja el final del drag para cada lista.
   const handleDragEnd = (side: "left" | "right") => (event: DragEndEvent) => {
@@ -132,10 +75,6 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
         [side]: arrayMove(currentList, oldIndex, newIndex)
       }
     })
-  }
-
-  const addPayment = (side: 'left' | 'right') => {
-    setshowAddPaymentModal(true)
   }
 
   const personName = selectedPerson?.name
@@ -166,7 +105,15 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd('left')}>
                   <SortableContext items={tableRows.left.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     {tableRows.left.map(item => (
-                      <SortableItem key={item.id} id={item.id} amount={item.amount} />
+                      <>
+                        {/* Darle click al SortableItem tiene que ser el trigger del EditPaymentSheet */}
+                          <SortableItem 
+                            key={item.id} 
+                            id={item.id} 
+                            amount={item.amount} 
+                          />
+                      </>
+                      
                     ))}
                   </SortableContext>
                 </DndContext>
@@ -179,13 +126,15 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd('right')}>
                   <SortableContext items={tableRows.right.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     {tableRows.right.map(item => (
-                      <SortableItem key={item.id} id={item.id} amount={item.amount} />
+                      <SortableItem 
+                        key={item.id} 
+                        id={item.id} 
+                        amount={item.amount} 
+                      />
                     ))}
                   </SortableContext>
                 </DndContext>
                 <h2>S/ 4000</h2>
-
-
               </div>
             </div>
           </div>
