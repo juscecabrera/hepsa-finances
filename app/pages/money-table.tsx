@@ -14,6 +14,7 @@ import UserActionDetails from "@/components/UserActionDetails"
 import UserActionDetails3 from "@/components/UserActionDetails3"
 import UserActionEdit from "@/components/UserActionEdit"
 import UserActionDelete from "@/components/UserActionDelete"
+import PaymentForm from "@/components/payment-form"
 
 type Payment = {
   id: string
