@@ -18,6 +18,18 @@ import {
 import { Button } from "@/components/ui/button"
 import { MoreHorizontal } from "lucide-react"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import DeletePaymentAlert from "./DeletePaymentAlert";
+
 
 interface SortableItemProps {
   id: string;
@@ -25,7 +37,8 @@ interface SortableItemProps {
 }
 
 export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
+  const [deletePaymentOpen, setDeletePaymentOpen] = useState<boolean>(false)
 
   /*
   Esto es para tener el drag. Para activarlo, solo tengo que descomentar esto y lo comentado dentro del div del return. Lo estoy quitando porque no me permitia hacer el click en el Dropdown para abrir el sheet de Ver Detalles de Pago
@@ -52,6 +65,9 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
   }
 
 
+  // Esto es temporal hasta hacer el back
+  const paymentId = 100;
+
   return (
     <>
       <div 
@@ -70,17 +86,15 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
             <MoreHorizontal/>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className='font-inter hover:cursor-pointer z-100'>
-            <DropdownMenuItem onClick={() => {
-              setOpenEdit(true)
-            }}>
-              Ver detalles de pago
-            </DropdownMenuItem>
-          {/* <DropdownMenuItem>Editar</DropdownMenuItem> */}
+        <DropdownMenuContent align="end" className='font-inter hover:cursor-pointer'>
+          <DropdownMenuItem onClick={() => {setOpenEdit(true)}}>Ver detalles de pago</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {setOpenEdit(true)}}>Editar</DropdownMenuItem>
+          <DropdownMenuItem className="bg-red-600 hover:!bg-red-700 w-full hover:!text-white text-white" onClick={() => setDeletePaymentOpen(true)}>Eliminar</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       </div>
       
+      <DeletePaymentAlert isModalOpen={deletePaymentOpen} setIsModalOpen={setDeletePaymentOpen} paymentId={paymentId} />
       <EditPaymentSheet item={itemData} openEdit={openEdit} setOpenEdit={setOpenEdit}/>
     </>
   )

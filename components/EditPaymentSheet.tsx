@@ -24,7 +24,6 @@ import { es } from "date-fns/locale"
 import { toast } from "sonner"
 
 interface EditPaymentSheetProps {
-    // children: React.ReactNode
     item: { id: string, amount: number } | null;
     openEdit: boolean
     setOpenEdit: (openEdit: boolean) => void
@@ -110,7 +109,7 @@ export const EditPaymentSheet:React.FC<EditPaymentSheetProps> = ({ openEdit, set
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="amount">Cantidad</Label>
-            <Input id="amount" className="bg-muted" value={amount} onChange={(e) => setAmount(e.target.value)} />
+            <Input id="amount" type="number" className="bg-muted" value={amount} onChange={(e) => setAmount(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="receipt">Boleta</Label>
