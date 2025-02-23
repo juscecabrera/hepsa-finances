@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { X, Check } from "lucide-react"
+import { AddPaymentSheet } from './AddPaymentSheet'
 
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import {
@@ -86,6 +87,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
   // Estados para el input temporal en cada columna
   const [newPaymentLeft, setNewPaymentLeft] = useState<string | null>(null)
   const [newPaymentRight, setNewPaymentRight] = useState<string | null>(null)
+  const [showAddPaymentModal, setshowAddPaymentModal] = useState<boolean>(false)
 
   // Estado interno para manejar la animación del modal
   const [showModal, setShowModal] = useState(isModalOpen)
@@ -132,6 +134,10 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
     })
   }
 
+  const addPayment = (side: 'left' | 'right') => {
+    setshowAddPaymentModal(true)
+  }
+
   const personName = selectedPerson?.name
 
   return (
@@ -147,6 +153,11 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
               <h2 className="text-2xl font-semibold leading-none tracking-tight">{personName}</h2>
               <p className="text-sm text-muted-foreground">Descripcion de los pagos</p>
             </div>
+            <div className='flex flex-row w-full justify-end'>
+              <AddPaymentSheet />
+
+            </div>
+
 
             <div className="grid grid-cols-2 gap-8 mt-3">
               {/* Columna Izquierda */}
@@ -159,24 +170,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                     ))}
                   </SortableContext>
                 </DndContext>
-                {newPaymentLeft === null ? (
-                  <Button className="my-2" onClick={() => setNewPaymentLeft('')}>
-                    Agregar pago
-                  </Button>
-                ) : (
-                  <div className="flex items-center gap-2 my-2">
-                    <input 
-                      type="number"
-                      value={newPaymentLeft}
-                      onChange={(e) => setNewPaymentLeft(e.target.value)}
-                      placeholder="Ingresa cantidad"
-                      className="border rounded-md p-2 w-full"
-                    />
-                    <button onClick={() => confirmPayment('left', newPaymentLeft)}>
-                      <Check className="text-green-500" />
-                    </button>
-                  </div>
-                )}
+                <h2>S/ 4000</h2>
               </div>
 
               {/* Columna Derecha */}
@@ -189,24 +183,9 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                     ))}
                   </SortableContext>
                 </DndContext>
-                {newPaymentRight === null ? (
-                  <Button className="my-2" onClick={() => setNewPaymentRight('')}>
-                    Agregar pago
-                  </Button>
-                ) : (
-                  <div className="flex items-center gap-2 my-2">
-                    <input 
-                      type="number"
-                      value={newPaymentRight}
-                      onChange={(e) => setNewPaymentRight(e.target.value)}
-                      placeholder="Ingresa cantidad"
-                      className="border rounded-md p-2 w-full"
-                    />
-                    <button onClick={() => confirmPayment('right', newPaymentRight)}>
-                      <Check className="text-green-500" />
-                    </button>
-                  </div>
-                )}
+                <h2>S/ 4000</h2>
+
+
               </div>
             </div>
           </div>

@@ -1,0 +1,145 @@
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { DatePicker } from "@/components/ui/date-picker"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
+import { toast } from "sonner"
+
+export const AddPaymentSheet = () => {
+  const [isPaid, setIsPaid] = useState(false)
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [file, setFile] = useState<File | null>(null)
+  const [amount, setAmount] = useState("1000")
+  const [description, setDescription] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return ""
+    return format(date, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })
+  }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0]
+    setFile(selectedFile || null)
+  }
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    const formData = new FormData()
+    formData.append("isPaid", isPaid.toString())
+    formData.append("amount", amount)
+    formData.append("date", date ? date.toISOString() : "")
+    formData.append("description", description)
+    if (file) {
+      formData.append("receipt", file)
+    }
+
+    toast.promise(
+      fetch("/api/payments", {
+        method: "POST",
+        body: formData,
+      }),
+      {
+        loading: "Agregando pago...",
+        success: (response) => {
+          if (!response.ok) throw new Error("Error al enviar el pago")
+          // Reset form fields here
+          setIsPaid(false)
+          setDate(new Date())
+          setFile(null)
+          setAmount("1000")
+          setDescription("")
+          setIsSubmitting(false)
+          return "El pago se ha agregado correctamente."
+        },
+        error: "Hubo un problema al agregar el pago. Por favor, inténtalo de nuevo.",
+      },
+    )
+  }
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Agregar Pago</Button>
+      </SheetTrigger>
+      <SheetContent className="font-inter space-y-3">
+        <SheetHeader>
+          <SheetTitle className="text-xl font-bold space-y-0 pb-4">Agregar pago</SheetTitle>
+        </SheetHeader>
+
+        <div className="flex items-center space-x-2 pb-4">
+          <Label htmlFor="paid-status">Pagado</Label>
+          <Switch id="paid-status" checked={isPaid} onCheckedChange={setIsPaid} />
+          <span className="text-sm text-muted-foreground">Por Pagar</span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="amount">Cantidad</Label>
+            <Input id="amount" className="bg-muted" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="receipt">Boleta</Label>
+            <div className="relative">
+              <input type="file" id="receipt" className="sr-only" onChange={handleFileChange} />
+              <label
+                htmlFor="receipt"
+                className={cn(
+                  "flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-muted border border-gray-300 rounded-md shadow-sm hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer",
+                  file && "text-indigo-600",
+                )}
+              >
+                {file ? file.name : "Seleccionar archivo"}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="date">Fecha de Pago</Label>
+          <DatePicker date={date} setDate={setDate} formatDate={formatDate} />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="description">Descripción</Label>
+          <Textarea
+            id="description"
+            placeholder="Descripción"
+            className="bg-muted resize-none pb-10"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button variant="secondary" className="w-full bg-muted hover:bg-muted/80">
+              Cancelar
+            </Button>
+          </SheetClose>
+          <Button type="submit" onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Enviando..." : "Guardar Cambios"}
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
+}
+

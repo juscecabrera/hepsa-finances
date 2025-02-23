@@ -1,5 +1,5 @@
 import MoneyTable from "./pages/money-table";
-import { DatePickerWithRange } from "@/components/datePicker";
+import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { inter } from "./pages/fonts";
 
 export default function Home() {
