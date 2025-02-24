@@ -15,23 +15,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 
-interface Payment {
-  id: number;
-  amount: number;
-  isPaid: number;
-  personId: number;
-}
+// interface Payment {
+//   id: number;
+//   amount: number;
+//   isPaid: number;
+//   personId: number;
+// }
 
 interface Person {
   id: number;
   name: string;
-  payments: Payment[];
+  // payments: Payment[]; // Lo comento para que en money-table no me de error
 }
 
 interface UserActionEditProps {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
-  selectedPerson?: Person;
+  selectedPerson: Person | null;
 }
 
 

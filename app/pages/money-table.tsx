@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { inter } from "./fonts"
 import AddUserDialog from "@/components/AddUserDialog"
-import UserActionDetails from "@/components/UserActionDetails"
 import UserActionDetails3 from "@/components/UserActionDetails3"
 import UserActionEdit from "@/components/UserActionEdit"
 import UserActionDelete from "@/components/UserActionDelete"
@@ -28,18 +27,18 @@ type Person = {
   payments: Payment[]
 }
 
-const getTotalPaid = (person: Person | null, paid: boolean): number => {
-  if (!person) return 0;
-  if (paid) {
-    return person.payments.reduce((sum, payment) => 
-      payment.isPaid ? sum + payment.amount : sum,
-    0);
-  } else {
-    return person.payments.reduce((sum, payment) => 
-      !(payment.isPaid) ? sum + payment.amount : sum,
-    0);
-  }
-};
+// const getTotalPaid = (person: Person | null, paid: boolean): number => {
+//   if (!person) return 0;
+//   if (paid) {
+//     return person.payments.reduce((sum, payment) => 
+//       payment.isPaid ? sum + payment.amount : sum,
+//     0);
+//   } else {
+//     return person.payments.reduce((sum, payment) => 
+//       !(payment.isPaid) ? sum + payment.amount : sum,
+//     0);
+//   }
+// };
 
 export default function MoneyTable() {
   const [people, setPeople] = useState<Person[]>([])
@@ -60,8 +59,8 @@ export default function MoneyTable() {
         const errorData = await res.json();
         console.log(errorData)
       }
-    } catch (error: any) {
-      console.error(error.message)
+    } catch (error) {
+      console.error(error)
     }
   }
 

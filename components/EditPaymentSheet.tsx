@@ -16,7 +16,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  // SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
@@ -44,6 +44,7 @@ export const EditPaymentSheet:React.FC<EditPaymentSheetProps> = ({ openEdit, set
     */
 
 
+    console.log(item)
 
 
   const formatDate = (date: Date | undefined) => {

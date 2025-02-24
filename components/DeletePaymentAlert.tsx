@@ -19,24 +19,23 @@ interface UserActionDeleteProps {
 
 const DeletePaymentAlert:React.FC<UserActionDeleteProps> = ({ isModalOpen, setIsModalOpen, paymentId }) => {
 
+  
     const handleDelete = async () => {
         try {
             //Falta hacer el endpoint para eliminar pagos
-
-
-        //   const response = await fetch("/api/payments", {
-        //     method: "DELETE",
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({ paymentId }),
-        //   })
-        //   if (response.ok) {
-        //     alert("User deleted successfully!")
-        //     setIsModalOpen(false)
-        //   } else {
-        //     alert("Failed to delete user")
-        //   }
+          const response = await fetch("/api/payments", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ paymentId }),
+          })
+          if (response.ok) {
+            alert("User deleted successfully!")
+            setIsModalOpen(false)
+          } else {
+            alert("Failed to delete user")
+          }
             return
         } catch (error) {
           console.error("Error:", error)

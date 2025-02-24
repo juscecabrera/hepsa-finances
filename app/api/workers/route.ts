@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
       await db.close()
   
-      return NextResponse.json(persons)
+      return NextResponse.json(persons, request)
     } catch (error) {
       console.error("Error:", error)
       return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 })
@@ -71,10 +71,15 @@ export async function POST(request: Request) {
     //     }
     // }
 
+    const response = {
+      id: result.lastID,
+      paymentsInsertPaid,
+      paymentsInsertNotPaid
+    }
     
     await db.close()
 
-    return NextResponse.json({ success: true, id: result.lastID }, { status: 201 })
+    return NextResponse.json({ success: true, id: response.id }, { status: 201 })
   } catch (error) {
     console.error("Error:", error)
     return NextResponse.json({ success: false, error: "Failed to add user" }, { status: 500 })

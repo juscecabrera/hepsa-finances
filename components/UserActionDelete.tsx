@@ -12,23 +12,23 @@ import {
 } from "@/components/ui/alert-dialog"
 
 
-interface Payment {
-  id: number;
-  amount: number;
-  isPaid: number;
-  personId: number;
-}
+// interface Payment {
+//   id: number;
+//   amount: number;
+//   isPaid: number;
+//   personId: number;
+// }
 
 interface Person {
   id: number;
   name: string;
-  payments: Payment[];
+  // payments: Payment[]; // Lo comento para que en money-table no me de error
 }
 
 interface UserActionDeleteProps {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
-  selectedPerson?: Person;
+  selectedPerson?: Person | null;
 }
 
 const UserActionDelete: React.FC<UserActionDeleteProps> = ({ isModalOpen, setIsModalOpen, selectedPerson }) => {

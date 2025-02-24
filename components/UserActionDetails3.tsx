@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 // import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import { AddPaymentSheet } from './AddPaymentSheet'
-import { EditPaymentSheet } from './EditPaymentSheet'
+// import { EditPaymentSheet } from './EditPaymentSheet'
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { SortableItem } from './SortableItem'
@@ -21,7 +21,7 @@ interface Person {
 interface UserActionDetailsProps {
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
-  selectedPerson: Person;
+  selectedPerson: Person | null;
 }
 
 const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
@@ -46,10 +46,35 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
   })
 
   // Estados para el input temporal en cada columna
-  const [selectedItem, setSelectedItem] = useState<{ id: string, amount: string } | null>(null);
+  // const [selectedItem, setSelectedItem] = useState<{ id: string, amount: string } | null>(null);
 
   // Estado interno para manejar la animación del modal
   const [showModal, setShowModal] = useState(isModalOpen)
+
+  const [fecha, setFecha] = useState('');
+
+  useEffect(() => {
+    const actualizarFecha = () => {
+      const fechaActual = new Date();
+      setFecha(fechaActual.toLocaleDateString('es-ES', {
+        weekday: "long", 
+        year: "numeric", 
+        month: "long", 
+        day: "numeric", 
+        hour: "2-digit", 
+        minute: "2-digit", 
+        second: "2-digit"
+      }));
+    };
+
+    // Actualiza la fecha inmediatamente y luego cada segundo
+    actualizarFecha();
+    const intervalo = setInterval(actualizarFecha, 1000);
+
+    // Limpieza del intervalo al desmontar el componente
+    return () => clearInterval(intervalo);
+  }, []);
+
 
   useEffect(() => {
     if (isModalOpen) {
@@ -79,6 +104,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
 
   const personName = selectedPerson?.name
 
+
   return (
     <>
       {showModal && (
@@ -89,6 +115,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
               <button onClick={() => setIsModalOpen(false)}><X /></button>
             </div>
             <div className="flex flex-col space-y-1.5 text-center sm:text-left">
+              <h2>{fecha}</h2>
               <h2 className="text-2xl font-semibold leading-none tracking-tight">{personName}</h2>
               <p className="text-sm text-muted-foreground">Descripcion de los pagos</p>
             </div>
@@ -108,7 +135,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                       <>
                         {/* Darle click al SortableItem tiene que ser el trigger del EditPaymentSheet */}
                           <SortableItem 
-                            key={item.id} 
+                            key={item.amount} 
                             id={item.id} 
                             amount={item.amount} 
                           />
@@ -127,7 +154,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
                   <SortableContext items={tableRows.right.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     {tableRows.right.map(item => (
                       <SortableItem 
-                        key={item.id} 
+                        key={item.amount} 
                         id={item.id} 
                         amount={item.amount} 
                       />
