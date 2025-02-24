@@ -1,14 +1,10 @@
 "use client"
-// import { Input } from "@/components/ui/input"
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-// import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-// import { motion, AnimatePresence } from "framer-motion"
-// import { Label } from "@radix-ui/react-label"
+
+
 import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { inter } from "./fonts"
 import AddUserDialog from "@/components/AddUserDialog"
 import UserActionDetails3 from "@/components/UserActionDetails3"
 import UserActionEdit from "@/components/UserActionEdit"
@@ -40,7 +36,11 @@ type Person = {
 //   }
 // };
 
-export default function MoneyTable() {
+interface MoneyTableProps {
+  company: string
+}
+
+export const MoneyTable: React.FC<MoneyTableProps> = ( { company } ) => {
   const [people, setPeople] = useState<Person[]>([])
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -88,11 +88,11 @@ export default function MoneyTable() {
   }
 
   return (
-    <div className={`container mx-auto py-10 ${inter.className} font-inter`}>
+    <div className={`container mx-auto py-10 font-inter`}>
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Finanzas Trabajadores Hepsa</CardTitle>
-          <CardDescription>Resumen de los pagos por hacer a trabajadores de Hepsa</CardDescription>
+          <CardTitle className="text-2xl font-bold">{company}</CardTitle>
+          <CardDescription>Resumen de los pagos por hacer a trabajadores de {company}</CardDescription>
         </CardHeader>
         <CardContent>
           <AddUserDialog />
@@ -101,6 +101,10 @@ export default function MoneyTable() {
               <TableRow>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Por Pagar Total</TableHead>
+                <TableHead>Semana Regular</TableHead>
+                <TableHead>CTS</TableHead>
+                <TableHead>Gratificaciones</TableHead>
+                <TableHead>Horas Extra</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -108,6 +112,10 @@ export default function MoneyTable() {
               {people.map((person) => (
                 <TableRow key={person.id} className="font-inter">
                   <TableCell className="font-medium font-inter">{person.name}</TableCell>
+                  <TableCell className="font-inter font-bold">S/ {person.amount.toLocaleString()}</TableCell>
+                  <TableCell className="font-inter font-medium">S/ {person.amount.toLocaleString()}</TableCell>
+                  <TableCell className="font-inter font-medium">S/ {person.amount.toLocaleString()}</TableCell>
+                  <TableCell className="font-inter font-medium">S/ {person.amount.toLocaleString()}</TableCell>
                   <TableCell className="font-inter font-medium">S/ {person.amount.toLocaleString()}</TableCell>
                   <TableCell className="text-right font-inter">
                     <Button onClick={() => handleSeeMore(person)} className="mr-5">Ver más</Button>
@@ -121,8 +129,6 @@ export default function MoneyTable() {
           </Table>
         </CardContent>
       </Card>
-
-      {/* <UserActionDetails isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} totalPaid={getTotalPaid(selectedPerson, true)} totalUnpaid={getTotalPaid(selectedPerson, false)}/> */}
 
       <UserActionDetails3 isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedPerson={selectedPerson} />
 

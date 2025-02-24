@@ -65,6 +65,8 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
   }
 
 
+  const paymentDescription = 'Semana Regular 20'
+
   // Esto es temporal hasta hacer el back
   const paymentId = 100;
 
@@ -75,12 +77,13 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
         // style={style}
         // {...attributes}
         // {...listeners}
-        className="my-4 text-lg bg-gray-200 p-3 rounded-md shadow-md font-medium hover:cursor-pointer flex flex-row justify-between"     
+        className="my-4 text-lg bg-gray-200 p-3 rounded-md shadow-md font-medium hover:cursor-pointer flex flex-row justify-between items-center"     
       >
-        S/ {amount}
-        
+        <p>S/ {amount}</p>
+        <p className="text-gray-600 text-base">{paymentDescription}</p>
+        <p>24/01/2025</p>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild >
+        <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Abrir menu</span>
             <MoreHorizontal/>
@@ -89,7 +92,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ id, amount }) => {
         <DropdownMenuContent align="end" className='font-inter hover:cursor-pointer'>
           <DropdownMenuItem onClick={() => {setOpenEdit(true)}}>Ver detalles de pago</DropdownMenuItem>
           <DropdownMenuItem onClick={() => {setOpenEdit(true)}}>Editar</DropdownMenuItem>
-          <DropdownMenuItem className="bg-red-600 hover:!bg-red-700 w-full hover:!text-white text-white" onClick={() => setDeletePaymentOpen(true)}>Eliminar</DropdownMenuItem>
+          <DropdownMenuItem className="bg-red-600 hover:!bg-red-700 hover:!text-white text-white" onClick={() => setDeletePaymentOpen(true)}>Eliminar</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       </div>

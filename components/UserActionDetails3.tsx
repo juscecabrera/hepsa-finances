@@ -10,8 +10,11 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import { SortableItem } from './SortableItem'
 
 interface Payment {
-  id: string;
-  amount: number;
+  id: string
+  amount: number
+  description: string
+  dateOfPayment: string | null
+  dateOfPromise: string
 }
 
 interface Person {
@@ -34,14 +37,14 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
     right: Payment[]
   }>({
     left: [
-      { id: 'l-1', amount: 0 },
-      { id: 'l-2', amount: 2000 },
-      { id: 'l-3', amount: 4000 }
+      { id: 'l-1', amount: 1000, description: 'Semana Regular 10', dateOfPayment: '20/01/2025', dateOfPromise: '' },
+      { id: 'l-2', amount: 2000, description: 'Semana Regular 10', dateOfPayment: '', dateOfPromise: '' },
+      { id: 'l-3', amount: 4000, description: 'Semana Regular 10', dateOfPayment: '', dateOfPromise: '' }
     ],
     right: [
-      { id: 'r-1', amount: 5000 },
-      { id: 'r-2', amount: 1000 },
-      { id: 'r-3', amount: 2000 }
+      { id: 'r-1', amount: 5000, description: 'Semana Regular 10', dateOfPayment: '', dateOfPromise: ''  },
+      { id: 'r-2', amount: 1000, description: 'Semana Regular 10', dateOfPayment: '', dateOfPromise: ''  },
+      { id: 'r-3', amount: 2000, description: 'Semana Regular 10', dateOfPayment: '', dateOfPromise: ''  }
     ]
   })
 
@@ -108,8 +111,8 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
   return (
     <>
       {showModal && (
-        <div className={`fixed inset-0 flex items-center justify-center text-lg bg-black bg-opacity-50 transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="sm:max-w-[800px] bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+        <div className={`fixed z-50 inset-0 flex items-center justify-center text-lg bg-black bg-opacity-50 transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="sm:max-w-[1100px] bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
             {/* Header del Modal */}
             <div className="flex w-full justify-end">
               <button onClick={() => setIsModalOpen(false)}><X /></button>
@@ -119,7 +122,7 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
               <h2 className="text-2xl font-semibold leading-none tracking-tight">{personName}</h2>
               <p className="text-sm text-muted-foreground">Descripcion de los pagos</p>
             </div>
-            <div className='flex flex-row w-full justify-end'>
+            <div className='flex flex-row justify-end'>
               <AddPaymentSheet />
 
             </div>
@@ -128,7 +131,12 @@ const UserActionDetails3: React.FC<UserActionDetailsProps> = ({
             <div className="grid grid-cols-2 gap-8 mt-3">
               {/* Columna Izquierda */}
               <div>
-                <h3 className="text-lg mb-2 font-semibold">Por Pagar</h3>
+                <div className='flex flex-row justify-between'>
+                  <h3 className="text-lg mb-2 font-semibold">Por Pagar</h3>
+                  <h3 className="text-lg mb-2 font-semibold">Motivo</h3>
+                  <h3 className="text-lg mb-2 font-semibold">Fecha de pago</h3>
+
+                </div>
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd('left')}>
                   <SortableContext items={tableRows.left.map(item => item.id)} strategy={verticalListSortingStrategy}>
                     {tableRows.left.map(item => (
