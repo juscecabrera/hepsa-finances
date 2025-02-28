@@ -16,7 +16,7 @@ interface Payment {
   dateOfPayment: string | null
   dateOfPromise: string
 }
-
+  
 interface Person {
   name: string;
 }
